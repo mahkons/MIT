@@ -21,7 +21,9 @@ Optional: define a helper function to avoid code duplication inside
 print_words() and print_top().
 """
 
+
 import sys
+
 
 def read_words(filename):
     words = []
@@ -37,22 +39,25 @@ def read_words(filename):
 
 ###
 
-def build_dict(filename):
+
+def b_dict(filename):
     words = read_words(filename)
     diction = {}
     for s in words:
         diction[s.lower()] = diction.get(s.lower(), 0) + 1
     return diction
 
+
 def print_words(filename):
-    for k, v in sorted(build_dict(filename).items(), key=lambda item: item[0]):
+    for k, v in sorted(b_dict(filename).items(), key=lambda item: item[0]):
         print(k, v)
     return
 
+
 def print_top(filename):
     cnt = 0
-    for k, v in sorted(build_dict(filename).items(), key=lambda item: -item[1]):
-        print(k, v) 
+    for k, v in sorted(b_dict(filename).items(), key=lambda item: -item[1]):
+        print(k, v)
         cnt += 1
         if(cnt == 20):
             break
