@@ -50,11 +50,10 @@ def build(filename):
 
 def print_words(filename):
     return sorted(build(filename).items(), key=lambda item: item[0])
-        
 
 
 def print_top(filename):
-    return sorted(build(filename).items(), key=lambda item: item[1], reverse = True)[:20]
+    return sorted(build(filename).items(), key=lambda item: item[1], reverse=True)[:20]
 
 # This basic command line argument parsing code is provided and
 # calls the print_words() and print_top() functions which you must define.
