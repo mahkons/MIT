@@ -15,8 +15,7 @@ def verbing(s):
             s += 'ly'
         else:
             s += 'ing'
-    print(s)
-    return
+    return s
 
 
 # Given a string, find the first appearance of the
@@ -32,11 +31,9 @@ def verbing(s):
 def not_bad(s):
     p1 = s.find('not')
     p2 = s.find('bad')
-    if p1 != -1 and p2 != -1 and p1 < p2:
+    if -1 < p1 < p2:
         s = s[:p1] + 'good' + s[p2 + 3:]
-    print(s)
-    return
-
+    return s
 
 # Consider dividing a string into two halves.
 # If the length is even, the front and back halves are the same length.
@@ -54,5 +51,4 @@ def front_back(a, b):
     mid_a = (len(a) + 1) // 2
     mid_b = (len(b) + 1) // 2
     res = a[:mid_a] + b[:mid_b] + a[mid_a:] + b[mid_b:]
-    print(res)
-    return
+    return res

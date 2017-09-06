@@ -6,12 +6,13 @@
 
 def remove_adjacent(lst):
     i = 0
+    out = []
     while i + 1 < len(lst):
-        if lst[i] == lst[i + 1]:
-            lst.pop(i + 1)
+        while i + 1 < len(lst) and lst[i] == lst[i + 1]:
+            i += 1
+        out.append(lst[i])
         i += 1
-    print(lst)
-    return
+    return out
 
 # Merge two sorted lists in one sorted list in linear time
 #
@@ -30,11 +31,6 @@ def linear_merge(lst1, lst2):
         else:
             lst.append(lst2[j])
             j += 1
-    while i < len(lst1):
-        lst.append(lst1[i])
-        i += 1
-    while j < len(lst2):
-        lst.append(lst2[j])
-        j += 1
-    print(lst)
-    return
+    lst.extend(lst1[i:])
+    lst.extend(lst2[j:])
+    return lst

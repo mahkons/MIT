@@ -40,7 +40,7 @@ def read_words(filename):
 ###
 
 
-def b_dict(filename):
+def build(filename):
     words = read_words(filename)
     diction = {}
     for s in words:
@@ -49,19 +49,12 @@ def b_dict(filename):
 
 
 def print_words(filename):
-    for k, v in sorted(b_dict(filename).items(), key=lambda item: item[0]):
-        print(k, v)
-    return
+    return sorted(build(filename).items(), key=lambda item: item[0])
+        
 
 
 def print_top(filename):
-    cnt = 0
-    for k, v in sorted(b_dict(filename).items(), key=lambda item: -item[1]):
-        print(k, v)
-        cnt += 1
-        if(cnt == 20):
-            break
-    return
+    return sorted(build(filename).items(), key=lambda item: item[1], reverse = True)[:20]
 
 # This basic command line argument parsing code is provided and
 # calls the print_words() and print_top() functions which you must define.
