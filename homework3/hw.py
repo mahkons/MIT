@@ -3,7 +3,7 @@ import sys
 
 
 def matrix_prod(a, b):
-    if(a.shape[0] <= 2 ** 6):
+    if(a.shape[0] <= 2):
         return np.dot(a, b)
     a = np.vsplit(a, 2)
     a[0] = np.hsplit(a[0], 2)
@@ -26,24 +26,36 @@ def matrix_prod(a, b):
     return c
 
 
-def get_and_print_matrix():
-    n = int(input())
-    pw_2 = 1
-    while(pw_2 < n):
-        pw_2 = pw_2 * 2
-    a = np.zeros(shape=(pw_2, n), dtype=int)
-    b = np.zeros(shape=(pw_2, n), dtype=int)
-    for i in range(n):
-        a[i] = input().split()
-    for i in range(n):
-        b[i] = input().split()
-    a = np.hstack((a, np.zeros(shape=(pw_2, pw_2 - n), dtype=int)))
-    b = np.hstack((b, np.zeros(shape=(pw_2, pw_2 - n), dtype=int)))
-    c = matrix_prod(a, b)
+def print_matrix(c, n):
     for i in range(n):
         for j in range(n):
             print(c[i, j], end=' ')
         print()
+    return
+
+
+def get_pw_2(n):
+    pw_2 = 1
+    while(pw_2 < n):
+        pw_2 = pw_2 * 2
+    return pw_2
+
+
+def get_matrix(n):
+    pw_2 = get_pw_2(n)
+    a = np.zeros((pw_2, n), dtype=int)
+    for i in range(n):
+        a[i] = input().split()
+    a = np.hstack((a, np.zeros((pw_2, pw_2 - n), dtype=int)))
+    return a
+
+
+def get_and_print_matrix():
+    n = int(input())
+    a = get_matrix(n)
+    b = get_matrix(n)
+    c = matrix_prod(a, b)
+    print_matrix(c, n)
     return
 
 if __name__ == "__main__":
