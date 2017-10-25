@@ -35,7 +35,7 @@ merge (Node key value nodel noder size) Nil = (Node key value nodel noder size)
 merge Nil Nil = Nil
 merge (Node keyF valueF nodelF noderF sizeF) 
 	(Node keyS valueS nodelS noderS sizeS) = 
-		Node keyS valueS (Node keyF valueF nodelF noderF sizeF) (merge nodelS noderS) (sizeF + sizeS)
+		Node keyS valueS (merge (Node keyF valueF nodelF noderF sizeF) nodelS) noderS (sizeF + sizeS)
 
 
 insert :: Ord k => k -> v -> BinaryTree k v -> BinaryTree k v
