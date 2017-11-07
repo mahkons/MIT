@@ -22,11 +22,15 @@ insert k v (Node key value nodel noder)
 	| otherwise = Node key value nodel (insert k v noder)
 
 
+getMinKey (Node key value Nil _) = (key, value);
+getMinKey (Node _ _ nodel _ ) = getMinKey nodel; 
+
 merge Nil Nil = Nil
-merge Nil (Node key value nodel noder) = Node key value nodel noder
-merge (Node key value nodel noder) Nil = Node key value nodel noder
-merge (Node keyF valueF nodelF noderF) (Node keyS valueS nodelS noderS) = 
-		Node keyS valueS (Node keyF valueF nodelF noderF) $ merge nodelS noderS
+merge Nil noder = noder
+merge nodel Nil = nodel
+merge nodel noder = Node keyMin valueMin nodel $ delete keyMin noder
+		where
+			(keyMin, valueMin) = getMinKey noder;
 
 
 delete :: Ord k => k -> BinaryTree k v -> BinaryTree k v
