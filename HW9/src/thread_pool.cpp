@@ -15,6 +15,14 @@ Task::Task(void (*func)(void *), void *argument, ThreadPool *Tpool) :
 }
 
 Task::~Task(){
+	pthread_mutex_lock(pool->m);
+	finished = true;
+	pool->started--;
+
+	pthread_cond_signal(cond);
+	pthread_cond_signal(pool->condend);
+	pthread_mutex_unlock(pool->m);
+
 	pthread_cond_destroy(cond);
 	delete cond;
 }
@@ -67,7 +75,7 @@ ThreadPool::~ThreadPool(){
 		pthread_cond_wait(condend, m);
 	}
 	pthread_mutex_unlock(m);
-	
+
 	pthread_mutex_lock(m);
 	stop = true;
 	pthread_cond_broadcast(cond);

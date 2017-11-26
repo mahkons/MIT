@@ -41,15 +41,6 @@ struct qsort_args{
 };
 
 void finish_task(Task *task){
-	pthread_mutex_lock(task->pool->m);
-	task->finished = true;
-	task->pool->started--;
-
-	pthread_cond_signal(task->cond);
-	pthread_cond_signal(task->pool->condend);
-
-	pthread_mutex_unlock(task->pool->m);
-	
 	delete (qsort_args*)(task->arg);
 	delete task;
 }
@@ -74,16 +65,12 @@ void thread_qsort(void* get_arg){
 	int* bound_l = (int *)std::partition(args->arr, args->arr + args->sz, [pivot](const int x){ return x < pivot; });
 	int* bound_r = (int *)std::partition(bound_l, args->arr + args->sz, [pivot](const int x){ return x <= pivot; });
 
-	pthread_mutex_lock(task->pool->m);
 	qsort_args *arg1 = new qsort_args({args->arr, int(bound_l - args->arr), args->depth - 1});
 	Task *task1 = new Task(thread_qsort, (void*)arg1, task->pool);
-	pthread_mutex_unlock(task->pool->m);
 	task->pool->submit(task1);
 
-	pthread_mutex_lock(task->pool->m);
 	qsort_args *arg2 = new qsort_args({bound_r, int(args->arr - bound_r) + args->sz, args->depth - 1});
 	Task *task2 = new Task(thread_qsort, (void*)arg2, task->pool);
-	pthread_mutex_unlock(task->pool->m);
 	task->pool->submit(task2);
 
 	finish_task(task);
@@ -104,10 +91,8 @@ int main(int argc, char **argv){
 
 	int depth = atoi(argv[3]);
 
-	pthread_mutex_lock(pool->m);
 	qsort_args *args = new qsort_args({rand_arr, sz, depth});
 	Task *task = new Task(thread_qsort, (void*)args, pool);
-	pthread_mutex_unlock(pool->m);
 
 	pool->submit(task);
 
