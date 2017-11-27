@@ -20,7 +20,8 @@ Task::~Task(){
 	pool->started--;
 
 	pthread_cond_signal(cond);
-	pthread_cond_signal(pool->condend);
+	if(!pool->started)
+		pthread_cond_signal(pool->condend);
 	pthread_mutex_unlock(pool->m);
 
 	pthread_cond_destroy(cond);

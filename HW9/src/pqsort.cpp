@@ -80,8 +80,6 @@ void thread_qsort(void* get_arg){
 
 int main(int argc, char **argv){
 	assert(argc == 4 && "Wrong number of arguments");
-
-	clock_t t_st = clock();
 	
 	int sz = atoi(argv[2]);
 	int *rand_arr = make_array_of_random(sz);
@@ -105,9 +103,6 @@ int main(int argc, char **argv){
 		if(sz <= 30)
 			print_array(rand_arr, sz);
 	}
-
-	printf("%lf\n", double(clock() - t_st) / CLOCKS_PER_SEC);
-
 
 	delete_array(rand_arr);
 	return 0;
