@@ -14,13 +14,13 @@ public:
 	~Task();
 
 	void (*f)(void *);
+	void wait();
 	void *arg;
-
 	ThreadPool* pool;
 	bool finished;
+private:
 	pthread_cond_t *cond;
 
-	void wait();
 };
 
 class ThreadPool {
@@ -29,17 +29,19 @@ public:
 	~ThreadPool();
 
 	void submit(Task *task);
+	void finit();
+	void started_locked_decr();
 
 	pthread_mutex_t *m;
 	pthread_cond_t *cond;
-	pthread_cond_t *condend;
 	bool stop;
-	int started;
 
 	std::queue<Task*> q;
 private:
 	std::vector<pthread_t> workers;
 	unsigned int threads_nm;
+	int started;
+	pthread_cond_t *condend;
 };
 
 #endif

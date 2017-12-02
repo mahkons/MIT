@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS= -std=c++11 -Wall -pedantic -Werror -Wextra -Wshadow -pthread
+CXXFLAGS= -std=c++11 -Wall -pedantic -Werror -Wextra -Wshadow -pthread -O2
 
 all: pqsort
 

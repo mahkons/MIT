@@ -74,8 +74,6 @@ void thread_qsort(void* get_arg){
 	task->pool->submit(task2);
 
 	finish_task(task);
-
-	return;
 }
 
 int main(int argc, char **argv){
@@ -85,16 +83,16 @@ int main(int argc, char **argv){
 	int *rand_arr = make_array_of_random(sz);
 
 	int threads_nm = atoi(argv[1]);
-	ThreadPool* pool = new ThreadPool(threads_nm);
+	ThreadPool pool(threads_nm);
 
 	int depth = atoi(argv[3]);
 
 	qsort_args *args = new qsort_args({rand_arr, sz, depth});
-	Task *task = new Task(thread_qsort, (void*)args, pool);
+	Task *task = new Task(thread_qsort, (void*)args, &pool);
 
-	pool->submit(task);
+	pool.submit(task);
 
-	delete pool;
+	pool.finit();
 
 	if(check(rand_arr, sz))
 		printf("OK\n");
@@ -105,5 +103,6 @@ int main(int argc, char **argv){
 	}
 
 	delete_array(rand_arr);
+
 	return 0;
 }

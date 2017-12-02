@@ -14,26 +14,32 @@ Task::Task(void (*func)(void *), void *argument, ThreadPool *Tpool) :
 	pthread_cond_init(cond, NULL);
 }
 
+void ThreadPool::started_locked_decr(){
+	started--;
+	if(!started)
+		pthread_cond_signal(condend);
+}
+
 Task::~Task(){
 	pthread_mutex_lock(pool->m);
 	finished = true;
-	pool->started--;
-
+	pool->started_locked_decr();
 	pthread_cond_signal(cond);
-	if(!pool->started)
-		pthread_cond_signal(pool->condend);
 	pthread_mutex_unlock(pool->m);
 
 	pthread_cond_destroy(cond);
 	delete cond;
 }
 
-
 void *get_task(void* arg){
 	ThreadPool *pool = (ThreadPool *)arg;
 
-	while (!pool->stop) {
+	while (true) {
 		pthread_mutex_lock(pool->m);
+		if(pool->stop){
+			pthread_mutex_unlock(pool->m);
+			break;
+		}
 
 		while (pool->q.empty() && !pool->stop) {
 			pthread_cond_wait(pool->cond, pool->m);
@@ -56,7 +62,7 @@ void *get_task(void* arg){
 }
 
 ThreadPool::ThreadPool(unsigned int threads_numb) : 
-		m(new pthread_mutex_t), cond(new pthread_cond_t), condend(new pthread_cond_t), stop(false), started(0), threads_nm(threads_numb) {
+		m(new pthread_mutex_t), cond(new pthread_cond_t), stop(false), threads_nm(threads_numb), started(0), condend(new pthread_cond_t) {
 
 	pthread_mutex_init(m, NULL);
 	pthread_cond_init(cond, NULL);
@@ -70,12 +76,15 @@ ThreadPool::ThreadPool(unsigned int threads_numb) :
 	pthread_mutex_unlock(m);
 }
 
-ThreadPool::~ThreadPool(){
+void ThreadPool::finit(){
 	pthread_mutex_lock(m);
 	while(started){
 		pthread_cond_wait(condend, m);
 	}
 	pthread_mutex_unlock(m);
+}
+
+ThreadPool::~ThreadPool(){
 
 	pthread_mutex_lock(m);
 	stop = true;
